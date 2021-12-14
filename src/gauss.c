@@ -1,4 +1,5 @@
 #include "gauss.h"
+#include <math.h>
 
 /**
  * Zwraca 0 - elimnacja zakonczona sukcesem
@@ -7,33 +8,69 @@
 
 int eliminate(Matrix *mat, Matrix *b){
 
-        int n = mat->r;
-        double **a = mat->data;
-        double **wektb = b->data;
-        double wspolczynnik;
+	int n = mat->r;
+	double **a = mat->data; //macierz A
+	double **wektb = b->data; //wektor b
+	double wspolczynnik;
 
-        for(int s=0; s<n; s++)
-        {
-                if( a[s][s] == 0 ) return 1;
-        }
+	double atmp, btmp, max, x;
+	int w, k, p, m, i;
 
-        for(int w=0; w < n-1; w++)
-        {
-                for(int k= w+1; k < n; k++)
-                {
-                        wspolczynnik = a[k][w]/ a[w][w];
+	// Metoda wyboru elementu głównego
+	for( w=0; w<n-1; w++)
+	{
+		max = fabs( a[w][w] );
+		m = w;
 
-                        for(int p=0; p<n; p++)
-                        {
-                                a[k][p] = a[k][p] - wspolczynnik * a[w][p];
-                        }
+		for( k= w+1; k<n; k++)
+		{
+			x = fabs( a[k][w] );
 
-                        wektb[k][0] = wektb[k][0] - wspolczynnik * wektb[w][0];
-                }
-        }
+			if( x > max)
+			{
+				max = x;
+				m = k;
+			}
 
-        mat->data = a;
-        b->data = wektb;
+		}
+		if( m != w )
+		{
+			btmp = wektb[w][0];
+			wektb[w][0] = wektb[m][0];
+			wektb[m][0] = btmp;
+			for( i=w; i<n; i++)
+			{
+				atmp = a[w][i];
+				a[w][i] = a[m][i];
+				a[m][i] = atmp;
+			}
+		}
+	}
 
-        return 0;
+	//Sprawdzenie, czy macierz jest osobliwa
+	for(w=0; w<n-1; w++)
+	{
+		if( a[w][w] == 0 ) return 1;
+	}
+
+	// Metoda eliminacji Gaussa
+	for(w=0; w<n; w++)
+	{
+		for(k= w+1; k<n; k++)
+		{
+			wspolczynnik = a[k][w]/ a[w][w];	
+			
+			for( p=0; p<n; p++)
+			{		
+				a[k][p] = a[k][p] - wspolczynnik * a[w][p];
+			}
+
+			wektb[k][0] = wektb[k][0] - wspolczynnik * wektb[w][0];	
+		}
+	}
+
+	mat->data = a;
+	b->data = wektb;
+
+	return 0;
 }
