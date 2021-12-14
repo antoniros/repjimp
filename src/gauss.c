@@ -17,9 +17,9 @@ int eliminate(Matrix *mat, Matrix *b){
                 if( a[s][s] == 0 ) return 1;
         }
 
-        for(int w=0; w<n-1; w++)
+        for(int w=0; w < n-1; w++)
         {
-                for(int k= w+1; k<n; k++)
+                for(int k= w+1; k < n; k++)
                 {
                         wspolczynnik = a[k][w]/ a[w][w];
 
