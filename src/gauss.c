@@ -17,14 +17,14 @@ int eliminate(Matrix *mat, Matrix *b){
 	int w, k, p, m, i;
 
 	// Metoda wyboru elementu głównego
-	for( w=0; w<n-1; w++)
+	for( w=0; w<n; w++)
 	{
-		max = fabs( a[w][w] );
+		max = (double) fabs( a[w][w] );
 		m = w;
 
 		for( k= w+1; k<n; k++)
 		{
-			x = fabs( a[k][w] );
+			x = (double) fabs( a[k][w] );
 
 			if( x > max)
 			{
@@ -45,28 +45,24 @@ int eliminate(Matrix *mat, Matrix *b){
 				a[m][i] = atmp;
 			}
 		}
-	}
-
-	//Sprawdzenie, czy macierz jest osobliwa
-	for(w=0; w<n-1; w++)
-	{
-		if( a[w][w] == 0 ) return 1;
-	}
-
-	// Metoda eliminacji Gaussa
-	for(w=0; w<n; w++)
-	{
-		for(k= w+1; k<n; k++)
+		for(p=0; p<n; p++)  //Sprawdzenie czy macierz jest osobliwa
+		{
+			if(a[p][p] == 0){
+				return 1;
+			}
+		}
+		for( k=w+1; k<n; k++) //eliminacja Gaussa
 		{
 			wspolczynnik = a[k][w]/ a[w][w];	
 			
-			for( p=0; p<n; p++)
+			for(i = w+1; i<n; i++)
 			{		
-				a[k][p] = a[k][p] - wspolczynnik * a[w][p];
+				a[k][i] = a[k][i] - wspolczynnik * a[w][i];
 			}
 
 			wektb[k][0] = wektb[k][0] - wspolczynnik * wektb[w][0];	
 		}
+
 	}
 
 	mat->data = a;
